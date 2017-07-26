@@ -10,17 +10,7 @@ use yii\bootstrap\ActiveForm;
         echo "<li><a href=\"/backend/comments\">Comments</a></li>";
     } ?>
 </ul>
-
-<?php if (\Yii::$app->user->can('createCategory')) { ?>
-    <?php $form = ActiveForm::begin(['id' => 'add-category-form', 'options' => ['class' => 'form-horizontal'],]); ?>
-    <?php echo $form->field($model, 'name')->label('Category name') ?>
-        <div class="form-group">
-            <?= Html::submitButton('Add', ['class' => 'btn btn-primary']) ?>
-        </div>
-    <?php ActiveForm::end(); ?>
     <hr>
-<?php } ?>
-
     <h4>Categories list:</h4>
 <?php if ($categories){ ?>
     <table class="table">
@@ -47,6 +37,15 @@ use yii\bootstrap\ActiveForm;
         }
         ?>
     </table>
+    <?php if (\Yii::$app->user->can('createCategory')) { ?>
+        <?php $form = ActiveForm::begin(['id' => 'add-category-form', 'options' => ['class' => 'form-horizontal'],]); ?>
+        <?php echo $form->field($model, 'name')->label('Add new category:') ?>
+        <div class="form-group">
+            <?= Html::submitButton('Add', ['class' => 'btn btn-primary']) ?>
+        </div>
+        <?php ActiveForm::end(); ?>
+
+    <?php } ?>
     <?php
 }
 ?>

@@ -12,14 +12,17 @@ echo "<hr>";
 echo "<p>" . $post['text'] ."</p>";
 echo "<hr>";
 
-$form = ActiveForm::begin() ?>
-<?php echo $form->field($model, 'text')->textarea() ?>
-<div class="form-group">
-    <div>
-        <?php echo Html::submitButton('Add comment', ['class' => 'btn btn-success']) ?>
+if (!(\Yii::$app->user->getIsGuest())){
+    $form = ActiveForm::begin() ?>
+    <?php echo $form->field($model, 'text')->textarea() ?>
+    <div class="form-group">
+        <div>
+            <?php echo Html::submitButton('Add comment', ['class' => 'btn btn-success']) ?>
+        </div>
     </div>
-</div>
-<?php ActiveForm::end() ?>
+    <?php ActiveForm::end() ?>
+<?php } ?>
+
 
 <?php echo "<h4>Comments:</h4>"; ?>
 

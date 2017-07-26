@@ -11,8 +11,9 @@
         echo "<li><a href=\"/backend/comments\">Comments</a></li>";
     } ?>
 </ul>
+    <hr>
+    <h4>Users list:</h4>
 
-    <h4>User list:</h4>
 
 <?php if ($users){ ?>
     <table class="table">

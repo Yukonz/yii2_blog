@@ -28,8 +28,9 @@ class ProfileForm extends Model{
     public function attributeLabels()
     {
         return [
-            'username' => 'Логин',
-            'password' => 'Пароль',
+            'username' => 'Login',
+            'password' => 'Password',
+            'email' => 'E-mail',
         ];
     }
 }
