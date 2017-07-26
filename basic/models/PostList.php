@@ -9,12 +9,14 @@ class PostList extends Model{
     public $date;
     public $category_id;
     public $user_id;
+    public $category = '';
+    public $user = '';
     public $order_by = 'Date DESC';
 
     public function rules()
     {
         return [
-            [['order_by'], 'required', 'message' => 'Field is required'],
+            [['order_by', 'category', 'user'], 'required', 'message' => 'Field is required'],
         ];
     }
 

@@ -23,6 +23,10 @@ class RbacController extends Controller
         $editUser->description = 'Edit a user';
         $auth->add($editUser);
 
+        $editComment = $auth->createPermission('editComment');
+        $editComment->description = 'Edit a comment';
+        $auth->add($editComment);
+
         $createCategory = $auth->createPermission('createCategory');
         $createCategory->description = 'Create a category';
         $auth->add($createCategory);
@@ -30,6 +34,10 @@ class RbacController extends Controller
         $viewAllPosts = $auth->createPermission('viewAllPosts');
         $viewAllPosts->description = 'View all posts';
         $auth->add($viewAllPosts);
+
+        $unlimitedPosts = $auth->createPermission('unlimitedPosts');
+        $unlimitedPosts->description = 'Create unlimited posts';
+        $auth->add($unlimitedPosts);
 
         $user = $auth->createRole('user');
         $auth->add($user);
@@ -45,11 +53,13 @@ class RbacController extends Controller
         $admin = $auth->createRole('admin');
         $auth->add($admin);
         $auth->addChild($admin, $createPost);
+        $auth->addChild($admin, $unlimitedPosts);
         $auth->addChild($admin, $editUser);
+        $auth->addChild($admin, $editComment);
         $auth->addChild($admin, $editor);
 
-        $auth->assign($editor, 3);
         $auth->assign($admin, 2);
+        $auth->assign($editor, 3);
         $auth->assign($user, 5);
     }
 }

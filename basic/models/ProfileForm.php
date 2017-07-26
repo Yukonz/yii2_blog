@@ -1,6 +1,7 @@
 <?php
 namespace app\models;
 use yii\base\Model;
+use yii\web\UploadedFile;
 
 class ProfileForm extends Model{
 
@@ -9,6 +10,10 @@ class ProfileForm extends Model{
     public $email;
     public $posts = 0;
     public $role = 'user';
+    /**
+     * @var UploadedFile
+     */
+    public $imageFile;
 
     public function rules()
     {

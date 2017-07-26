@@ -15,9 +15,11 @@ use app\models\AddCommentForm;
 use app\models\User;
 use app\models\PostList;
 use app\models\Post;
+use app\models\Category;
 use app\models\Comment;
 use yii\data\Pagination;
-
+use yii\base\Model;
+use yii\web\UploadedFile;
 
 class SiteController extends Controller
 {
@@ -89,6 +91,18 @@ class SiteController extends Controller
             ->all();
 
         return $this->render('index', compact('model', 'posts', 'pagination'));
+    }
+
+    public function actionCategory()
+    {
+        $category = Category::findOne($_GET['id']);
+        $posts = Post::find()
+            ->where(['category_id' => $_GET['id']])
+            ->innerJoinWith('user')
+            ->asArray()
+            ->all();
+
+        return $this->render('category', compact('posts', 'category'));
     }
 
     public function actionSingle_post()
@@ -205,6 +219,10 @@ class SiteController extends Controller
             $user->posts = $model->posts;
             $user->password = \Yii::$app->security->generatePasswordHash($model->password);
             $user->save();
+
+            if ($model->imageFile = UploadedFile::getInstance($model,'imageFile')) {
+                $model->imageFile->saveAs(Yii::$app->basePath.'/web/avatars/avatar_' . $user->id . '.jpg');
+            }
         } else {
             $model->email = Yii::$app->user->identity->email;
         }
@@ -219,7 +237,8 @@ class SiteController extends Controller
         }
 
         $model = new RegisterForm();
-        if($model->load(\Yii::$app->request->post()) && $model->validate()){
+
+        if($model->load(\Yii::$app->request->post())){
             $user = new User();
             $user->username = $model->username;
             $user->email = $model->email;
@@ -227,10 +246,17 @@ class SiteController extends Controller
             $user->password = \Yii::$app->security->generatePasswordHash($model->password);
             $user->register_date = date("Y-m-d H:i:s");
             $user->posts = $model->posts;
+            $user->save();
 
-            if($user->save()){
-                return $this->goHome();
+            $user = User::find()
+                ->where(['username' => $model->username])
+                ->one();
+
+            if ($model->imageFile = UploadedFile::getInstance($model,'imageFile')) {
+                $model->imageFile->saveAs(Yii::$app->basePath.'/web/avatars/avatar_' . $user->id . '.jpg');
             }
+
+            return $this->redirect('login');
         }
 
         return $this->render('register', compact('model'));

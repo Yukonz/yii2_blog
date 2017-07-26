@@ -142,3 +142,20 @@ textarea {
 .edit:hover, .delete:hover {
     opacity: 1.0;
 }
+
+img.avatar {
+    margin-top: 5px;
+    width: 40px;
+    height: 40px;
+}
+
+img.avatar-profile {
+    margin-top: 5px;
+    max-width: 120px;
+    max-height: 120px;
+}
+
+img.avatar-comments {
+    max-width: 60px;
+    max-height: 60px;
+}

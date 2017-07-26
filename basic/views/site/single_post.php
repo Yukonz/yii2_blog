@@ -25,6 +25,7 @@ $form = ActiveForm::begin() ?>
 
 <?php foreach ($comments as $comment){
     echo "<p>" . $comment['text']    . "</p>";
+    echo "<img class='avatar-comments' src='/avatars/avatar_" . $comment['user_id'] . ".jpg'>";
     echo "<p>Author: " . $comment['user']['username'] . "</p>";
     echo "<p>" . $comment['date']    . "</p>";
     echo "<hr>";

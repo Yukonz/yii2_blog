@@ -55,6 +55,7 @@ AppAsset::register($this);
                 )
                 . Html::endForm()
                 . '</li>'
+                . '<li><img class="avatar" src="/avatars/avatar_' . Yii::$app->user->identity->id . '.jpg"></li>'
             )
         ],
     ]);

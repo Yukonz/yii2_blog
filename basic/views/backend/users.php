@@ -7,6 +7,9 @@
   <li><a href="/backend/posts">Posts</a></li>
   <li><a href="/backend/categories">Categories</a></li>
   <li class="active"><a href="/backend/users">Users</a></li>
+    <?php if (\Yii::$app->user->can('editComment')) {
+        echo "<li><a href=\"/backend/comments\">Comments</a></li>";
+    } ?>
 </ul>
 
     <h4>User list:</h4>

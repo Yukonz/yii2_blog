@@ -13,6 +13,7 @@ use app\models\AddPostForm;
 use app\models\PostList;
 use app\models\Post;
 use app\models\User;
+use app\models\Comment;
 use app\models\EditUserForm;
 use yii\data\Pagination;
 
@@ -81,21 +82,28 @@ class BackendController extends Controller
 
         $model = new PostList();
 
+
         if (\Yii::$app->user->can('viewAllPosts')) {
             $posts = Post::find();
         } else {
-            $posts = Post::find()->where(['user_id' => Yii::$app->user->identity->id]);;
+            $posts = Post::find()->where(['user_id' => Yii::$app->user->identity->id]);
         }
+
+        $user = User::findIdentity(Yii::$app->user->identity->id);
+        $posts_count = $user->posts;
 
         $pagination = new Pagination([
             'defaultPageSize' => 5,
             'totalCount' => $posts->count(),
         ]);
 
+        $model->load(\Yii::$app->request->post());
+
         if (\Yii::$app->user->can('viewAllPosts')) {
             $posts = Post::find()
                 ->innerJoinWith('user')
                 ->innerJoinWith('category')
+                ->where(['LIKE', 'posts.user_id', $model->user])
                 ->orderBy($model->order_by)
                 ->offset($pagination->offset)
                 ->limit($pagination->limit)
@@ -114,7 +122,37 @@ class BackendController extends Controller
                 ->all();
         }
 
-        return $this->render('posts', compact('model', 'posts', 'pagination'));
+        $categories_list = Category::find()->select(['name', 'id'])->indexBy('id')->column();
+        array_unshift($categories_list, "All");
+
+        $users_list = User::find()->select(['username', 'id'])->indexBy('id')->column();
+        array_unshift($users_list, "All");
+
+        return $this->render('posts', compact('model', 'posts', 'pagination', 'categories_list', 'users_list', 'posts_count'));
+    }
+
+    public function actionComments()
+    {
+        if (\Yii::$app->user->can('editComment')) {
+            $comments = Comment::find();
+
+            $pagination = new Pagination([
+                'defaultPageSize' => 10,
+                'totalCount' => $comments->count(),
+            ]);
+
+            $comments = Comment::find()
+                ->innerJoinWith('user')
+                ->innerJoinWith('post')
+                ->orderBy('date DESC')
+                ->offset($pagination->offset)
+                ->limit($pagination->limit)
+                ->asArray()
+                ->all();
+
+            return $this->render('comments', compact('comments','pagination'));
+        }
+        return $this->redirect('posts');
     }
 
     public function actionCategories()
@@ -215,9 +253,23 @@ class BackendController extends Controller
 
     public function actionPost_delete()
     {
+        Comment::deleteAll('post_id = :post_id ', [':post_id' => $_GET['id']]);
+
         $post = Post::findOne($_GET['id']);
         $post->delete();
+
+        $user = User::findIdentity($post['user_id']);
+        $user->posts--;
+        $user->save();
+
         return $this->redirect('posts');
+    }
+
+    public function actionComment_delete()
+    {
+        $comment = Comment::findOne($_GET['id']);
+        $comment->delete();
+        return $this->redirect('comments');
     }
 
     public function actionPost_add()
