@@ -24,6 +24,7 @@ use yii\bootstrap\ActiveForm;
         <tr>
             <td>ID</td>
             <td>Name</td>
+            <td>Posts</td>
             <?php if (\Yii::$app->user->can('createCategory')) {
                 echo"<td>Delete</td>";
             }?>
@@ -33,6 +34,7 @@ use yii\bootstrap\ActiveForm;
             <tr>
                 <td><?php echo $category['id'] ?></td>
                 <td><?php echo $category['name'] ?></td>
+                <td><?php echo $category['posts'] ?></td>
                 <?php if (\Yii::$app->user->can('createCategory')) {
                     echo "
                 <td><a href='/backend/category_delete?id=" . $category['id'] . "' class='btn btn-danger delete'>Delete</a></td>";

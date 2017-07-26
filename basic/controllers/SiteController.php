@@ -70,6 +70,7 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+
         $model = new PostList();
         $posts = Post::find();
         $post_count = $posts->count();
@@ -78,12 +79,14 @@ class SiteController extends Controller
             'totalCount' => $post_count,
         ]);
 
-            $posts = Post::find()
-                ->offset($pagination->offset)
-                ->limit($pagination->limit)
-                ->orderBy('Date DESC')
-                ->asArray()
-                ->all();
+        $posts = Post::find()
+            ->offset($pagination->offset)
+            ->innerJoinWith('category')
+            ->innerJoinWith('user')
+            ->limit($pagination->limit)
+            ->orderBy('Date DESC')
+            ->asArray()
+            ->all();
 
         return $this->render('index', compact('model', 'posts', 'pagination'));
     }
@@ -92,10 +95,15 @@ class SiteController extends Controller
     {
 
         $model = new AddCommentForm();
-        $post = Post::findOne($_GET['id']);
+        $post = Post::find()
+            ->innerJoinWith('user')
+            ->innerJoinWith('category')
+            ->where(['posts.id' => $_GET['id']])
+            ->one();
 
         $comments = Comment::find()
             ->orderBy('date DESC')
+            ->innerJoinWith('user')
             ->where(['post_id' => $post->id])
             ->asArray()
             ->all();

@@ -94,19 +94,23 @@ class BackendController extends Controller
 
         if (\Yii::$app->user->can('viewAllPosts')) {
             $posts = Post::find()
-                ->asArray()
+                ->innerJoinWith('user')
+                ->innerJoinWith('category')
                 ->orderBy($model->order_by)
                 ->offset($pagination->offset)
                 ->limit($pagination->limit)
+                ->asArray()
                 ->all();
 
         } else {
             $posts = Post::find()
-                ->asArray()
+                ->innerJoinWith('user')
+                ->innerJoinWith('category')
                 ->orderBy($model->order_by)
                 ->offset($pagination->offset)
                 ->where(['user_id' => Yii::$app->user->identity->id])
                 ->limit($pagination->limit)
+                ->asArray()
                 ->all();
         }
 
@@ -126,7 +130,28 @@ class BackendController extends Controller
             ->asArray()
             ->all();
 
+        $cat_count = count($categories);
+
+        for ($i=0; $i<$cat_count; $i++){
+            $cat_id = $categories[$i]['id'];
+            $posts = Post::find()
+                ->asArray()
+                ->where(['category_id' => $cat_id])
+                ->all();
+            $categories[$i]['posts'] = count($posts);
+        }
+
         return $this->render('categories', compact('categories', 'model'));
+    }
+
+    public function actionCategory_delete()
+    {
+        $category = Category::findOne($_GET['id']);
+        $category->delete();
+
+        Post::deleteAll('category_id = :category_id ', [':category_id' => $_GET['id']]);
+
+        return $this->redirect('categories');
     }
 
     public function actionUsers()

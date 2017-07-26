@@ -25,8 +25,8 @@ use yii\widgets\LinkPager;
             <td>ID</td>
             <td>Header</td>
             <td>Text</td>
-            <td>Category ID</td>
-            <td>User ID</td>
+            <td>Category</td>
+            <td>User</td>
             <td>Date</td>
             <td>Edit</td>
             <td>Delete</td>
@@ -39,8 +39,8 @@ use yii\widgets\LinkPager;
                 <td><?php echo $post['id'] ?></td>
                 <td><?php echo $post['header'] ?></td>
                 <td><?php echo $post['text'] ?></td>
-                <td><?php echo $post['category_id'] ?></td>
-                <td><?php echo $post['user_id'] ?></td>
+                <td><?php echo $post['category']['name'] ?></td>
+                <td><?php echo $post['user']['username'] ?></td>
                 <td><?php echo $post['date'] ?></td>
                 <td><a href='/backend/post_edit?id= <?php echo $post['id'] ?> ' class='btn btn-success edit'>Edit</a></td>
                 <td><a href='/backend/post_delete?id= <?php echo $post['id'] ?> ' class='btn btn-danger delete'>Delete</a></td>

@@ -5,9 +5,9 @@ use yii\bootstrap\ActiveForm;
 
 echo "<h2>" . $post['header'] ."</h2>";
 echo "<hr>";
-echo "<h4>Author: "   . $post['user_id']     . "</h4>";
-echo "<h4>Date: "     . $post['date']        . "</h4>";
-echo "<h4>Category: " . $post['category_id'] . "</h4>";
+echo "<h4>Author: "   . $post['user']['username'] . "</h4>";
+echo "<h4>Date: "     . $post['date']             . "</h4>";
+echo "<h4>Category: " . $post['category']['name'] . "</h4>";
 echo "<hr>";
 echo "<p>" . $post['text'] ."</p>";
 echo "<hr>";
@@ -25,7 +25,7 @@ $form = ActiveForm::begin() ?>
 
 <?php foreach ($comments as $comment){
     echo "<p>" . $comment['text']    . "</p>";
-    echo "<p>" . $comment['user_id'] . "</p>";
+    echo "<p>Author: " . $comment['user']['username'] . "</p>";
     echo "<p>" . $comment['date']    . "</p>";
     echo "<hr>";
 }

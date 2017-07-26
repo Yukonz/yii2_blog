@@ -77,4 +77,14 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return \Yii::$app->security->validatePassword($password, $this->password);
     }
+
+    public function getPost()
+    {
+        return $this->hasMany(Post::className(), ['user_id' => 'id']);
+    }
+
+    public function getComment()
+    {
+        return $this->hasMany(Comment::className(), ['user_id' => 'id']);
+    }
 }
