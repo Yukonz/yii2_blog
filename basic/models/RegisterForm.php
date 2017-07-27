@@ -11,6 +11,7 @@ class RegisterForm extends Model{
     public $email;
     public $role = 'user';
     public $posts = 0;
+    public $verifyCode;
     /**
      * @var UploadedFile
      */
@@ -24,6 +25,7 @@ class RegisterForm extends Model{
             ['username', 'unique', 'targetClass' => User::className(),  'message' => 'Этот логин уже занят'],
             ['email', 'unique', 'targetClass' => User::className(),  'message' => 'Этот E-mail уже занят'],
             ['imageFile', 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg'],
+            ['verifyCode', 'captcha'],
         ];
     }
 

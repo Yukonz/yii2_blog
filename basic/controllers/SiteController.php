@@ -96,13 +96,25 @@ class SiteController extends Controller
     public function actionCategory()
     {
         $category = Category::findOne($_GET['id']);
+
+        $posts = Post::find()
+            ->where(['category_id' => $_GET['id']]);
+        $post_count = $posts->count();
+
+        $pagination = new Pagination([
+            'defaultPageSize' => 5,
+            'totalCount' => $post_count,
+        ]);
+
         $posts = Post::find()
             ->where(['category_id' => $_GET['id']])
             ->innerJoinWith('user')
+            ->offset($pagination->offset)
+            ->limit($pagination->limit)
             ->asArray()
             ->all();
 
-        return $this->render('category', compact('posts', 'category'));
+        return $this->render('category', compact('posts', 'category', 'pagination'));
     }
 
     public function actionSingle_post()

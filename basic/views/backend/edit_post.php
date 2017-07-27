@@ -3,22 +3,14 @@ use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use app\models\Category;
 
-?>
-
-<?php $form = ActiveForm::begin(['id' => 'add-post-form', 'options' => ['class' => 'form-horizontal'],]); ?>
-
-<?php echo $form->field($model, 'header')->label('Post header') ?>
-<?php echo $form->field($model, 'text')->textarea()->label('Post text') ?>
-
-
-<?php echo $form->field($model, 'category_id')->dropdownList(
-    Category::find()->select(['name', 'id'])->indexBy('id')->column()
-);
-
-?>
-
-    <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-primary']) ?>
-    </div>
-
-<?php ActiveForm::end(); ?>
+$form = ActiveForm::begin(['id' => 'add-post-form', 'options' => ['class' => 'form-horizontal'],]);
+    echo $form->field($model, 'header')->label('Post header');
+    echo $form->field($model, 'text')->textarea()->label('Post text');
+    echo $form->field($model, 'category_id')->dropdownList(
+        Category::find()->select(['name', 'id'])->indexBy('id')->column()
+    );
+    echo
+        "<div class='form-group'>"
+            . Html::submitButton('Save', ['class' => 'btn btn-primary']) .
+        "</div>";
+ActiveForm::end();
