@@ -66,25 +66,19 @@ class BackendController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('posts');
+        return $this->redirect('/backend/posts');
     }
-
-    /**
-     * Login action.
-     *
-     * @return Response|string
-     */
-
-
 
     public function actionPosts()
     {
 
         $model = new PostList();
-
+        $model->load(\Yii::$app->request->post());
 
         if (\Yii::$app->user->can('viewAllPosts')) {
-            $posts = Post::find();
+            $posts = Post::find()
+                ->orWhere(['LIKE', 'posts.text', $model->search])
+                ->orWhere(['LIKE', 'posts.header', $model->search]);
         } else {
             $posts = Post::find()->where(['user_id' => Yii::$app->user->identity->id]);
         }
@@ -97,13 +91,14 @@ class BackendController extends Controller
             'totalCount' => $posts->count(),
         ]);
 
-        $model->load(\Yii::$app->request->post());
-
         if (\Yii::$app->user->can('viewAllPosts')) {
             $posts = Post::find()
                 ->innerJoinWith('user')
                 ->innerJoinWith('category')
-                ->where(['LIKE', 'posts.user_id', $model->user])
+                ->orWhere(['LIKE', 'posts.text', $model->search])
+                ->orWhere(['LIKE', 'posts.header', $model->search])
+                ->andWhere(['LIKE', 'posts.category_id', $model->category_id])
+                ->andWhere(['LIKE', 'posts.user_id', $model->user_id])
                 ->orderBy($model->order_by)
                 ->offset($pagination->offset)
                 ->limit($pagination->limit)
@@ -205,12 +200,19 @@ class BackendController extends Controller
     {
         $model = new EditUserForm();
         $user = User::findOne($_GET['id']);
+        $current_role = $user->role;
 
         if($model->load(\Yii::$app->request->post()) && $model->validate()){
             $user->username = $model->username;
             $user->email = $model->email;
             $user->role =  $model->role;
             $user->save();
+
+            $auth = Yii::$app->authManager;
+            $new_role = $auth->getRole($model->role);
+            $current_role = $auth->getRole($current_role);
+            $auth->revoke($current_role, $user->id);
+            $auth->assign($new_role, $user->id);
 
             return $this->redirect('users');
         }

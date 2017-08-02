@@ -7,16 +7,18 @@ class PostList extends Model{
     public $header;
     public $text;
     public $date;
-    public $category_id;
-    public $user_id;
+    public $category_id = '';
+    public $user_id = '';
     public $category = '';
     public $user = '';
     public $order_by = 'Date DESC';
+    public $search = '';
 
     public function rules()
     {
         return [
             [['order_by', 'category', 'user'], 'required', 'message' => 'Field is required'],
+            ['search', 'string']
         ];
     }
 

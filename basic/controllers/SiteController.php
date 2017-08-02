@@ -18,7 +18,6 @@ use app\models\Post;
 use app\models\Category;
 use app\models\Comment;
 use yii\data\Pagination;
-use yii\base\Model;
 use yii\web\UploadedFile;
 
 class SiteController extends Controller
@@ -72,7 +71,6 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-
         $model = new PostList();
         $posts = Post::find();
         $post_count = $posts->count();
@@ -119,7 +117,6 @@ class SiteController extends Controller
 
     public function actionSingle_post()
     {
-
         $model = new AddCommentForm();
         $post = Post::find()
             ->innerJoinWith('user')
@@ -162,6 +159,7 @@ class SiteController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
             return $this->goBack();
         }
+
         return $this->render('login', [
             'model' => $model,
         ]);
@@ -263,6 +261,10 @@ class SiteController extends Controller
             $user = User::find()
                 ->where(['username' => $model->username])
                 ->one();
+
+            $auth = Yii::$app->authManager;
+            $role = $auth->getRole('user');
+            $auth->assign($role, $user->id);
 
             if ($model->imageFile = UploadedFile::getInstance($model,'imageFile')) {
                 $model->imageFile->saveAs(Yii::$app->basePath.'/web/avatars/avatar_' . $user->id . '.jpg');

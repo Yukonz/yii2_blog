@@ -54,6 +54,14 @@ if ($posts){
     echo "</table>";
     echo LinkPager::widget(['pagination' => $pagination]);
 
+    $form = ActiveForm::begin(['action' => ['posts'], 'id' => 'order-by-form', 'options' => ['class' => 'form-horizontal'],]);
+        echo $form->field($model, 'search')->textInput(['maxlength' => 20, 'class' => 'form-control input-sm']);
+        echo
+            "<div class='form-group'>"
+            . Html::submitButton('Search', ['class' => 'btn btn-primary']) .
+            "</div>";
+    ActiveForm::end();
+
     $form = ActiveForm::begin(['id' => 'order-by-form', 'options' => ['class' => 'form-horizontal'],]);
         echo $form->field($model, 'order_by')->dropdownList(
             ['date DESC'=>'Date', 'header'=>'Header', 'text'=>'Text', 'category_id'=>'Category', 'user_id'=>'User']
@@ -67,8 +75,9 @@ if ($posts){
             $users_list
             )->label('View posts from user:');
 
-        echo "<div class='form-group'>";
-        echo Html::submitButton('Sort', ['class' => 'btn btn-primary']);
-        echo "</div>";
+        echo
+            "<div class='form-group'>"
+            . Html::submitButton('Sort', ['class' => 'btn btn-primary']) .
+            "</div>";
     ActiveForm::end();
 }
